@@ -1,0 +1,167 @@
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Profile</h1>
+        <div class="card mt-3">
+            <div class="card-body text-center">
+                <img src="<%= user.photos[0].value %>" class="rounded-circle mb-3" alt="Profile Picture"
+                    style="width: 150px;">
+                <h2>
+                    <%= user.displayName %>
+                </h2>
+                <p>ID: <%= user.id %>
+                </p>
+                <p>Email: <%= user.emails[0].value %>
+                </p>
+                <p>Name: <%= user.name.givenName %>
+                        <%= user.name.familyName %>
+                </p>
+                <p>Gender: <%= user.gender %>
+                </p>
+            </div>
+        </div>
+        <h3>Your Pages</h3>
+        <% if (pages && pages.length> 0) { %>
+            <div class="form-group">
+                <label for="since">Since:</label>
+                <input type="date" id="since" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="until">Until:</label>
+                <input type="date" id="until" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="period">Period:</label>
+                <select id="period" class="form-control">
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="days_28">28 Days</option>
+                    <option value="month">Month</option>
+                    <option value="lifetime">Lifetime</option>
+                    <option value="total_over_range">Total Over Range</option>
+                </select>
+            </div>
+            <select id="pageSelect" class="form-control mt-3">
+                <% pages.forEach(page=> { %>
+                    <option value="<%= page.id %>">
+                        <%= page.name %>
+                    </option>
+                    <% }) %>
+            </select>
+            <div id="pageInsights" class="mt-3">
+            </div>
+            <% } else { %>
+                <p>You have no pages.</p>
+                <% } %>
+    </div>
+
+    <script>
+        document.getElementById('pageSelect').addEventListener('change', async function () {
+            const pageId = this.value;
+            const since = document.getElementById('since').value;
+            const until = document.getElementById('until').value;
+            const period = document.getElementById('period').value;
+            const url = `/page-insights/${pageId}?since=${since}&until=${until}&period=${period}`;
+            const response = await fetch(url);
+            const insights = await response.json();
+            if (response.ok) {
+                document.getElementById('pageInsights').innerHTML = `
+                     <div class="card mt-3">
+                         <div class="card-body">
+                             <h4>Total Followers / Fans: ${insights.total_followers}</h4>
+                             <h4>Total Engagement: ${insights.total_engagement}</h4>
+                             <h4>Total Impressions: ${insights.total_impressions}</h4>
+                             <h4>Total Reactions: ${insights.total_reactions}</h4>
+                         </div>
+                     </div>
+                 `;
+            } else {
+                document.getElementById('pageInsights').innerHTML = 'Error fetching insights';
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Profile</h1>
+        <div class="card mt-3">
+            <div class="card-body text-center">
+                <img src="<%= user.photos[0].value %>" class="rounded-circle mb-3" alt="Profile Picture"
+                    style="width: 150px;">
+                <h2>
+                    <%= user.displayName %>
+                </h2>
+                <p>ID: <%= user.id %>
+                </p>
+                <p>Email: <%= user.emails[0].value %>
+                </p>
+                <p>Name: <%= user.name.givenName %>
+                        <%= user.name.familyName %>
+                </p>
+                <p>Gender: <%= user.gender %>
+                </p>
+            </div>
+        </div>
+        <h3>Your Pages</h3>
+        <% if (pages && pages.length> 0) { %>
+            <% pages.forEach(page=> { %>
+                <div class="card">
+                    <h3>
+                        <%= page.name %>
+                    </h3>
+                    <p>ID: <%= page.id %>
+                    </p>
+                </div>
+                <% }) %>
+                    <% } else { %>
+                        <p>You have no pages.</p>
+                        <% } %>
+    </div>
+</body>
+
+</html>
